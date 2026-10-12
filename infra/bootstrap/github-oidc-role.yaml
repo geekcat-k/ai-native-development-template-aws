@@ -1,23 +1,23 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Description: GitHub Actions用OIDC Providerと初期デプロイロール
+Description: GitHub Actions OIDC provider and initial deployment role
 Parameters:
   GitHubOwner:
     Type: String
-    Description: GitHubのユーザー名または組織名
+    Description: GitHub account or organization name
   GitHubOwnerId:
     Type: String
-    Description: GitHub所有者のアカウントID
+    Description: GitHub owner account ID
   GitHubRepo:
     Type: String
-    Description: このテンプレートから作ったリポジトリ名
+    Description: Repository name created from this template
   GitHubRepoId:
     Type: String
-    Description: このテンプレートから作ったリポジトリのID
+    Description: Repository ID created from this template
   CreateOidcProvider:
     Type: String
     AllowedValues: ['true', 'false']
     Default: 'true'
-    Description: 同一AWSアカウントにGitHub OIDC Providerが既にあればfalse
+    Description: Set to false if the GitHub OIDC provider already exists in this AWS account
 Conditions:
   ShouldCreateOidcProvider: !Equals [!Ref CreateOidcProvider, 'true']
 Resources:
@@ -53,4 +53,4 @@ Resources:
 Outputs:
   DeployRoleArn:
     Value: !GetAtt DeployRole.Arn
-    Description: GitHub Actions変数AWS_DEPLOY_ROLE_ARNに設定
+    Description: Set this ARN as the AWS_DEPLOY_ROLE_ARN GitHub Actions variable
