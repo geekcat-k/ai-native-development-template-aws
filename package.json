@@ -1,0 +1,19 @@
+{
+  "name": "ai-native-development-template-aws",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "packageManager": "pnpm@10.14.0",
+  "scripts": {
+    "dev": "pnpm --filter @starter/web dev",
+    "build": "pnpm -r build",
+    "typecheck": "pnpm -r typecheck",
+    "test": "pnpm -r test",
+    "verify": "pnpm typecheck && pnpm test && pnpm build && pnpm cdk:synth",
+    "cdk:synth": "pnpm --filter @starter/infra synth",
+    "cdk:deploy": "pnpm --filter @starter/infra deploy"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.12"
+  }
+}

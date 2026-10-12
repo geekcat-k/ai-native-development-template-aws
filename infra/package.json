@@ -1,0 +1,25 @@
+{
+  "name": "@starter/infra",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "synth": "cdk synth --app 'node --import tsx bin/app.ts'",
+    "deploy": "cdk deploy --app 'node --import tsx bin/app.ts' --require-approval never --outputs-file cdk-outputs.json"
+  },
+  "dependencies": {
+    "aws-cdk-lib": "^2.210.0",
+    "constructs": "^10.4.2"
+  },
+  "devDependencies": {
+    "@types/node": "^24.3.0",
+    "aws-cdk": "^2.1029.0",
+    "esbuild": "^0.25.12",
+    "tsx": "^4.20.4",
+    "typescript": "^5.9.2",
+    "vitest": "^3.2.4"
+  }
+}
