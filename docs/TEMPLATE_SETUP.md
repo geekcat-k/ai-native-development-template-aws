@@ -23,8 +23,20 @@
 4. このリポジトリの `infra/bootstrap/github-oidc-role.yaml` をGitHub画面で開き、**Download raw file** で手元に保存します。
 5. [CloudFormation Console](https://console.aws.amazon.com/cloudformation/)の同じリージョンで **Create stack > With new resources** を開き、**Upload a template file** に保存したYAMLを指定します。
 6. スタック名を設定し、パラメータ `GitHubOwner`、`GitHubOwnerId`、`GitHubRepo`、`GitHubRepoId` にActionsで控えた同名の値を入力します。スタック名には例として`GitHubOidcBootstrap`を使い、アプリの`STACK_NAME`とは別の名前にします。
-7. 同じAWSアカウントにGitHub OIDC Providerがなければ `CreateOidcProvider=true`、既にあれば`false`にします。IAMリソース作成の確認欄をチェックしてスタックを作成します。
-8. `CREATE_COMPLETE` になったら **Outputs** の `DeployRoleArn` を控えます。
+7. 同じAWSアカウントにGitHub OIDC Providerがなければ `CreateOidcProvider=true`、既にあれば`false`にして、**Next** で「スタックオプションの設定」へ進みます。
+
+「スタックオプションの設定」では、次のように選びます。画面に表示されない任意項目は設定不要です。
+
+| 項目 | 設定 |
+| --- | --- |
+| タグ | 空欄のままで可 |
+| アクセス許可（IAMサービスロール） | 既存のロールを指定せず、初期値のまま。ここで作成するGitHub用デプロイロールは選びません |
+| スタック作成失敗時の動作 | 初期値の「すべてのスタックリソースをロールバック」 |
+| 詳細オプション（スタックポリシー、通知、タイムアウトなど） | 初期値のまま |
+| 機能（Capabilities） | 「このテンプレートでIAMリソースが作成される可能性を承認する」にチェック。表示されない場合は次の確認画面でチェック |
+
+8. **Next** で確認画面へ進み、AWSアカウント、リージョン、GitHub所有者・リポジトリの名前とID、IAMリソース作成の承認を確認してスタックを作成します。このテンプレートは `AdministratorAccess` を持つIAMロールを作ります。
+9. `CREATE_COMPLETE` になったら **Outputs** の `DeployRoleArn` を控えます。
 
 この初期ロールは、CDK bootstrapとAWSリソース作成を簡単に始めるため、`AdministratorAccess` を持ちます。GitHub OIDCの信頼先は指定した名前・IDのリポジトリの`main`に限定しています。学習・開発用の専用AWSアカウントで利用し、実サービスでは権限を必要なサービスに絞ってください。AWSアカウントの料金予算と通知も設定してください。
 
@@ -95,6 +107,7 @@ Lambdaの`SAMPLE_TABLE_NAME`はCDKが設定し、画面の`apiBaseUrl`は`apps/w
 - [GitHub OIDCの`sub`形式](https://docs.github.com/en/actions/reference/security/oidc)
 - [GitHub ActionsからAWSへのOIDC接続](https://docs.github.com/en/actions/how-tos/secure-your-work/security-harden-deployments/oidc-in-aws)
 - [AWS IAMのGitHub OIDCロール](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_create_for-idp_oidc.html)
+- [CloudFormationでのスタック作成とスタックオプション](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/cfn-console-create-stack.html)
 - [Claude Code GitHub Actions](https://code.claude.com/docs/en/github-actions)
 - [Codex Cloud](https://learn.chatgpt.com/docs/cloud)
 - [OpenAI Docs: Codex GitHub連携](https://learn.chatgpt.com/docs/third-party/github)
