@@ -21,7 +21,7 @@
 
 - [x] 固定している `anthropics/claude-code-action`（SHA `1d6de8c`）の `action.yml` に `claude_code_oauth_token` 入力があることを確認した。
 - [x] `pnpm verify` が成功した。
-- [ ] Pull Request の `verify` が成功する。
+- [x] Pull Request #17 の `verify` が成功した（Actions run 38240524255）。
 - [ ] 利用者が Secret `CLAUDE_CODE_OAUTH_TOKEN` を登録し、Issue コメントの `@claude` で Actions が動くことを確認する。
 
 ## リスク・未決定事項
