@@ -51,6 +51,8 @@ flowchart LR
 
 最初に`AGENTS.md`を読み、`docs/00-project-brief.md`から順番にプロジェクト固有の内容を埋めます。承認済みdocs/tasksを正本とし、Issueには対象タスク、変更範囲、完了条件、テスト方針を書きます。Pull Requestで検証結果と差分を確認してから`main`へマージします。リリース時は利用者がActionsから本番デプロイを手動実行します。
 
+依存関係に更新があるとDependabotがPull Requestを作ります。件数が増える理由と確認方法は[環境構築手順](docs/TEMPLATE_SETUP.md)の「Dependabotの更新PR」を参照してください。
+
 ## コマンド（ローカルで使う場合）
 
 ```sh
