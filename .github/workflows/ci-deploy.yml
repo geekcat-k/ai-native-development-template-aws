@@ -64,6 +64,13 @@ jobs:
         with:
           role-to-assume: ${{ vars.AWS_DEPLOY_ROLE_ARN }}
           aws-region: ${{ vars.AWS_REGION }}
+      - name: Check application stack name
+        run: |
+          BOOTSTRAP_ROLE=$(aws cloudformation describe-stacks --stack-name "$STACK_NAME" --query "Stacks[0].Outputs[?OutputKey=='DeployRoleArn'].OutputValue | [0]" --output text 2>/dev/null) || BOOTSTRAP_ROLE=''
+          if [ -n "$BOOTSTRAP_ROLE" ] && [ "$BOOTSTRAP_ROLE" != 'None' ]; then
+            echo '::error::STACK_NAMEがGitHub OIDC初期設定用スタックを指しています。STACK_NAMEを削除するか、別のアプリ用スタック名を指定してください。'
+            exit 1
+          fi
       - name: CDK bootstrap（未実施の場合のみ）
         run: |
           if ! aws cloudformation describe-stacks --stack-name CDKToolkit > /dev/null 2>&1; then
