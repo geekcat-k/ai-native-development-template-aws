@@ -38,6 +38,7 @@
 | MAINT-2026-10-12 | GitHub Actions の Node.js 20 警告解消 | 保守 | Done | `tasks/2026-10-12-actions-node24.md` | PR #14 をマージ済み。 |
 | MAINT-2026-10-12-DEPENDABOT | Dependabot の依存更新をまとめて適用 | 保守 | Done | `tasks/2026-10-12-dependabot-batch.md` | PR #15 に PR #1、#3〜#9 を集約。 |
 | MAINT-2026-10-12-CLAUDE-AUTH | @claude を Pro/Max プランの利用枠で動かす | 保守 | Waiting Approval | `tasks/2026-10-12-claude-subscription-auth.md` | Secret 登録後の動作確認は利用者が行う。 |
+| FEAT-2026-10-12-CUSTOM-DOMAIN | Route 53 の独自ドメインで公開できるようにする | 保守 | Waiting Approval | `tasks/2026-10-12-custom-domain.md` | Issue #18。独自ドメインでの動作確認は利用者が行う。 |
 
 ## 直近の変更履歴
 
@@ -49,6 +50,7 @@
 | 2026-10-12 | Dependabot PR #1、#3〜#9 の集約を開始 | `tasks/2026-10-12-dependabot-batch.md` |
 | 2026-10-12 | PR #14 のマージと PR #15 の verify 成功を確認 | `tasks/2026-10-12-actions-node24.md`, `tasks/2026-10-12-dependabot-batch.md` |
 | 2026-10-12 | @claude の Pro/Max トークン認証対応を開始 | `tasks/2026-10-12-claude-subscription-auth.md` |
+| 2026-10-12 | 独自ドメイン（Route 53）対応を実装し、ローカル検証を完了 | `tasks/2026-10-12-custom-domain.md` |
 
 ## 未承認・未決定事項
 

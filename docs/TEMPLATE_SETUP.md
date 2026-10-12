@@ -66,7 +66,7 @@ PRが作られただけでは`main`は変わらず、本番デプロイも実行
 | `AWS_REGION` | 選んだリージョン（例: `ap-northeast-1`） |
 | `AWS_DEPLOY_ROLE_ARN` | CloudFormationの `DeployRoleArn` 出力 |
 
-任意の変数として`STACK_NAME`（既定`AiWebStarterStack`）があります。同じAWSアカウントに複数プロジェクトを置く場合だけ設定します。**手順2で作ったOIDC初期設定用スタック名（例: `GitHubOidcBootstrap`）を指定しないでください。** 迷う場合は`STACK_NAME`を登録せず、既定値を使います。
+任意の変数として`STACK_NAME`（既定`AiWebStarterStack`）があります。同じAWSアカウントに複数プロジェクトを置く場合だけ設定します。独自ドメインで公開する場合の変数は「8. 独自ドメインで公開する」で設定します。**手順2で作ったOIDC初期設定用スタック名（例: `GitHubOidcBootstrap`）を指定しないでください。** 迷う場合は`STACK_NAME`を登録せず、既定値を使います。
 
 アクセスキーとシークレットアクセスキーは作成・登録しません。GitHub ActionsはOIDCの短期認証情報を使います。
 Lambdaの`SAMPLE_TABLE_NAME`はCDKが設定し、画面の`apiBaseUrl`は`apps/web/public/config.json`の`/api`を使います。アプリ用の追加環境変数は初期状態では不要です。
@@ -109,6 +109,58 @@ Pro/Maxのトークンが期限切れになったら、`claude setup-token` で�
 
 [IssueからAI開発を進める](DEVELOPMENT_WORKFLOW.md)に沿って、`docs/00-project-brief.md`の目的から順に記入します。Issueを作成し、`@claude`または`@codex`へ実装を依頼し、Pull RequestのCIと差分を確認してマージします。`main`のCI成功を確認したら、利用者がActionsから本番デプロイを手動実行します。
 
+## 8. 独自ドメインで公開する（任意）
+
+初期状態では`https://xxxx.cloudfront.net`形式のURLで公開します。`app.example.com`のような自分のドメインで公開したい場合は、手順4の初回デプロイが成功した後にこの手順を行います。ドメインの取得とDNSの管理には、アプリと**同じAWSアカウント**のRoute 53を使います。
+
+費用として、ドメインの登録・更新料金（年額、ドメインの種類で異なる）とRoute 53ホストゾーンの月額料金が発生します。ACMの公開証明書は無料です。金額は[Route 53の料金](https://aws.amazon.com/route53/pricing/)で確認してください。
+
+### 8-1. Route 53でドメインを取得する
+
+1. [Route 53 Console](https://console.aws.amazon.com/route53/)の **Registered domains > Register domains** を開きます。
+2. 使いたいドメイン名を検索し、空いていれば選択して購入手続きに進みます。登録期間と自動更新を選び、連絡先を入力します。連絡先の個人情報を公開しない設定（プライバシー保護）を有効にしておきます。
+3. 登録者の連絡先メールアドレスに確認メールが届くので、リンクを開いて確認します。確認しないと、一定期間後にドメインが停止されます。
+4. 登録完了まで数分から数時間かかります。**Registered domains** で状態が完了になるまで待ちます。
+5. **Hosted zones** を開くと、取得したドメインと同じ名前のパブリックホストゾーンが自動で作られています。その **Hosted zone ID**（`Z`で始まる文字列）を控えます。
+
+Route 53以外の事業者で取得済みのドメインを使う場合は、Route 53で同じ名前のパブリックホストゾーンを作り、表示された4つのネームサーバー（NSレコード）を取得元の事業者の管理画面に設定します。反映には最大で数十時間かかることがあります。
+
+公開に使う名前は、取得したドメインそのもの（`example.com`）とサブドメイン（`app.example.com`など）のどちらでも構いません。この手順では1つの名前だけを設定します。
+
+### 8-2. ACMで証明書を発行する
+
+CloudFrontで使う証明書は、アプリのリージョンに関係なく **米国東部（バージニア北部）`us-east-1`** で発行する必要があります。
+
+1. [ACM Console](https://console.aws.amazon.com/acm/home?region=us-east-1)を開き、画面右上のリージョンが **米国東部（バージニア北部）** になっていることを確認します。
+2. **Request** で **Request a public certificate** を選びます。
+3. **Fully qualified domain name** に公開に使う名前（例: `app.example.com`）を入力します。検証方法は **DNS validation** を選び、そのほかは初期値のまま **Request** を押します。
+4. 作成した証明書を開き、**Create records in Route 53** から検証用のCNAMEレコードを作成します。
+5. 数分待ち、状態が **Issued（発行済み）** になったら **ARN**（`arn:aws:acm:us-east-1:`で始まる文字列）を控えます。
+
+検証用のCNAMEレコードは、証明書の自動更新に使われるため削除しないでください。
+
+### 8-3. GitHub Actionsの変数を設定する
+
+**Settings > Secrets and variables > Actions > Variables** で次の3つを登録します。3つすべてを設定したときだけ独自ドメインが有効になり、一部だけ設定するとデプロイがエラーで止まります。
+
+| 名前 | 値 |
+| --- | --- |
+| `CUSTOM_DOMAIN_NAME` | 公開に使う名前（例: `app.example.com`）。小文字で入力し、`https://`や末尾の`/`は付けません。証明書に入力した名前と同じにします |
+| `HOSTED_ZONE_ID` | 8-1で控えたHosted zone ID |
+| `CERTIFICATE_ARN` | 8-2で控えた`us-east-1`の証明書ARN |
+### 8-4. デプロイして確認する
+
+1. **Actions > CI and deploy > Run workflow** で`main`を選び、`deploy`をオンにして実行します。
+2. CDKがCloudFrontに独自ドメインと証明書を設定し、Route 53にCloudFrontを指すAレコードとAAAAレコード（エイリアス）を作ります。CloudFrontの設定反映に数分かかることがあります。
+3. `deploy`の末尾 **Show site URL** に`https://独自ドメイン`が表示されます。そのURLを開き、`Hello World`、`Hello from DynamoDB`、`/api/hello`を確認します。
+
+DNSの反映に数分かかることがあります。`https://xxxx.cloudfront.net`形式のURLも引き続き使えます。CloudFormationの出力`CloudFrontUrl`で確認できます。
+
+### 独自ドメインをやめる・変更する
+
+- やめる場合は、3つの変数を削除してデプロイします。CloudFrontの独自ドメイン設定とRoute 53のA/AAAAレコードが削除されます。ドメインとホストゾーンは残り、料金も発生し続けます。不要なら、ドメインの自動更新の停止とホストゾーンの削除を利用者がコンソールで行います。
+- 名前を変える場合は、新しい名前で8-2の証明書を発行し、`CUSTOM_DOMAIN_NAME`と`CERTIFICATE_ARN`を更新してデプロイします。古い証明書は、デプロイ成功後に不要であれば削除できます。
+
 ## よくある失敗
 
 | 状態 | 確認すること |
@@ -122,6 +174,11 @@ Pro/Maxのトークンが期限切れになったら、`claude setup-token` で�
 | `@claude` に反応しない | GitHub App、`CLAUDE_CODE_OAUTH_TOKEN`または`ANTHROPIC_API_KEY`の登録と有効期限、Actions、コメント投稿者の権限 |
 | `@claude` が利用上限で止まる | Pro/Maxのトークンを使う場合、ブラウザやCLIと共有の利用上限に達していないか |
 | `@codex` に反応しない | CodexのGitHub連携、クラウド環境、対象リポジトリへの権限 |
+| `独自ドメインを使う場合は … をすべて設定してください` | `CUSTOM_DOMAIN_NAME`、`HOSTED_ZONE_ID`、`CERTIFICATE_ARN`の3つが揃っているか。使わない場合は3つとも削除する |
+| `us-east-1（バージニア北部）で発行したACM証明書` | 証明書をアプリと同じリージョンで発行していないか。`us-east-1`で発行し直す |
+| CloudFrontの更新で証明書・別名のエラー | 証明書が **Issued** か、証明書の名前と`CUSTOM_DOMAIN_NAME`が一致しているか、同じ名前が別のCloudFrontで使われていないか |
+| Route 53のレコード作成で`already exists` | ホストゾーンに同じ名前のA/AAAAレコードが既にないか。不要なら利用者が削除するか、別の名前を使う |
+| 独自ドメインで開けない | DNSの反映待ちか、ホストゾーンのNSがドメインのネームサーバー設定と一致しているか |
 
 ## 公式資料
 
@@ -133,6 +190,9 @@ Pro/Maxのトークンが期限切れになったら、`claude setup-token` で�
 - [GitHub ActionsからAWSへのOIDC接続](https://docs.github.com/en/actions/how-tos/secure-your-work/security-harden-deployments/oidc-in-aws)
 - [AWS IAMのGitHub OIDCロール](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_create_for-idp_oidc.html)
 - [CloudFormationでのスタック作成とスタックオプション](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/cfn-console-create-stack.html)
+- [Route 53でのドメイン登録](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/domain-register.html)
+- [CloudFrontでの独自ドメインとHTTPS](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/CNAMEs.html)
+- [ACMのDNS検証](https://docs.aws.amazon.com/acm/latest/userguide/dns-validation.html)
 - [Claude Code GitHub Actions](https://code.claude.com/docs/en/github-actions)
 - [Codex Cloud](https://learn.chatgpt.com/docs/cloud)
 - [OpenAI Docs: Codex GitHub連携](https://learn.chatgpt.com/docs/third-party/github)
