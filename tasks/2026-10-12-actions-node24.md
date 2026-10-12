@@ -1,7 +1,7 @@
 # Task: GitHub Actions の Node.js 20 警告を解消する
 
 - Task ID: MAINT-2026-10-12
-- Status: Waiting Approval
+- Status: Done
 - Owner: Codex
 - Related Requirements: CI の保守
 - Created: 2026-10-12
@@ -23,6 +23,7 @@ GitHub Actions で Node.js 20 の非推奨警告が表示される。Action 自�
 - [x] ワークフローの YAML 構文を確認した。
 - [x] `pnpm verify` が成功した。
 - [x] Pull Request #14 の `verify` が成功し、ジョブログに `Node.js 20 is deprecated` が出ないことを確認した（Actions run 38222762799）。
+- [x] Pull Request #14 を `main` にマージした。
 
 ## リスク・未決定事項
 
