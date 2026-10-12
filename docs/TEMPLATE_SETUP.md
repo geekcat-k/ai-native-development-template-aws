@@ -11,6 +11,18 @@
 5. **Settings > Secrets and variables > Actions > Variables** を後で開けるようにしておきます。
 6. **Actions > CI and deploy > Run workflow** で`main`を選び、`deploy`をオフ（初期値）のまま一度実行します。`verify`の **Show repository IDs for AWS setup** に表示される`GitHubOwner`、`GitHubOwnerId`、`GitHubRepo`、`GitHubRepoId`を控えます。この実行では`deploy`はスキップされます。
 
+### 推奨: `main`のRulesetを設定する
+
+Pull RequestとCIを経由して`main`にマージするため、各自のリポジトリに[Rulesetの雛形](../.github/rulesets/protect-main.json)を取り込みます。テンプレートからリポジトリを作っただけではRulesetは有効になりません。上の手順6で`verify`が成功してから設定してください。
+
+1. 自分のリポジトリで`.github/rulesets/protect-main.json`を開き、**Download raw file** でJSONを保存します。
+2. **Settings** の左メニューで **Rulesets > Rulesets** を開き、**New ruleset > Import a ruleset** から保存したJSONを選択します。設定画面が見えない場合は、リポジトリの管理権限と[利用プラン](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/managing-rulesets-for-a-repository)を確認します。
+3. 取り込み後、対象が`main`、状態が **Active**、バイパス対象が空であることを確認します。必須ステータスチェックが **GitHub Actions** の`verify`であることも確認します。`deploy`は手動実行用なので必須チェックに加えません。
+4. PR必須、未解決のレビュー会話なし、ブランチ削除・強制Push禁止を確認して **Create** を押します。
+5. 最初のPRで`verify`が実行され、成功するまでマージできないことを確認します。
+
+雛形の必須承認数は**0人**です。一人で始める場合もPRを作り、`verify`の成功と差分を自分で確認してからマージできます。チームで運用する場合は、別のレビュアーを用意して必須承認数を**1人以上**に変更してください。厳格なステータスチェック設定のため、`main`が更新された後はPRブランチを最新にして`verify`を再実行する必要があります。AIが作ったPRでも差分の確認を省かないでください。
+
 `.github/dependabot.yml`により、GitHub ActionsとnpmパッケージのPull Requestが週次で作られます。ActionsはSHAで固定しているため、Dependabotの更新を確認してマージしてください。
 
 公開リポジトリでも、クラウド認証情報はコードに含めません。`.env.example`は名前と形式の見本です。
@@ -70,7 +82,7 @@ Lambdaの`SAMPLE_TABLE_NAME`はCDKが設定し、画面の`apiBaseUrl`は`apps/w
 3. GitHubの **Settings > Secrets and variables > Actions > Secrets > New repository secret** に `ANTHROPIC_API_KEY` を登録します。値をIssue、Pull Request、ファイルへ貼らないでください。
 4. 自分のIssueを一つ作り、コメントに `@claude このIssueの内容を確認してください` と書いて動作を確認します。Actionsの `Claude Code` が動きます。
 
-`@claude`のワークフローには、ブランチ作成とPull Request作成のため`contents`/`pull-requests`/`issues`の書き込み権限を付与しています。Node.jsとpnpmを用意し、Claudeが`pnpm verify`を実行できるようにしています。AWS認証情報は渡さず、本番デプロイは利用者が`main`から手動実行します。PRが作成できない場合は、**Settings > Actions > General > Workflow permissions** の **Allow GitHub Actions to create and approve pull requests** を有効にしてください。ただしGITHUB_TOKENで作られたPRはCIが起動しないため、PR作成後に`verify`が実行されることを必ず確認してください。さらに`main`のブランチ保護で`verify`の成功とレビューを必須にしてください。
+`@claude`のワークフローには、ブランチ作成とPull Request作成のため`contents`/`pull-requests`/`issues`の書き込み権限を付与しています。Node.jsとpnpmを用意し、Claudeが`pnpm verify`を実行できるようにしています。AWS認証情報は渡さず、本番デプロイは利用者が`main`から手動実行します。PRが作成できない場合は、**Settings > Actions > General > Workflow permissions** の **Allow GitHub Actions to create and approve pull requests** を有効にしてください。ただしGITHUB_TOKENで作られたPRはCIが起動しないため、PR作成後に`verify`が実行されることを必ず確認してください。手順1のRulesetを設定すると、`verify`が成功するまでマージできません。
 
 このテンプレートでは、Issue/PRコメントからの起動を管理者・メンバー・共同作業者に限定します。コメントの文面がコードを変更し得るため、Pull Requestの差分を人が確認します。
 
@@ -106,6 +118,8 @@ Lambdaの`SAMPLE_TABLE_NAME`はCDKが設定し、画面の`apiBaseUrl`は`apps/w
 
 - [GitHubテンプレートリポジトリ](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-template-repository)
 - [GitHub Actionsの手動実行](https://docs.github.com/en/actions/how-tos/manage-workflow-runs/manually-run-a-workflow)
+- [GitHub Rulesetのインポート](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/managing-rulesets-for-a-repository#importing-a-ruleset)
+- [GitHub Rulesetで使えるルール](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/available-rules-for-rulesets)
 - [GitHub OIDCの`sub`形式](https://docs.github.com/en/actions/reference/security/oidc)
 - [GitHub ActionsからAWSへのOIDC接続](https://docs.github.com/en/actions/how-tos/secure-your-work/security-harden-deployments/oidc-in-aws)
 - [AWS IAMのGitHub OIDCロール](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_create_for-idp_oidc.html)
