@@ -50,7 +50,7 @@
 | `AWS_REGION` | 選んだリージョン（例: `ap-northeast-1`） |
 | `AWS_DEPLOY_ROLE_ARN` | CloudFormationの `DeployRoleArn` 出力 |
 
-任意の変数として`STACK_NAME`（既定`AiWebStarterStack`）があります。同じAWSアカウントに複数プロジェクトを置く場合だけ設定します。
+任意の変数として`STACK_NAME`（既定`AiWebStarterStack`）があります。同じAWSアカウントに複数プロジェクトを置く場合だけ設定します。**手順2で作ったOIDC初期設定用スタック名（例: `GitHubOidcBootstrap`）を指定しないでください。** 迷う場合は`STACK_NAME`を登録せず、既定値を使います。
 
 アクセスキーとシークレットアクセスキーは作成・登録しません。GitHub ActionsはOIDCの短期認証情報を使います。
 Lambdaの`SAMPLE_TABLE_NAME`はCDKが設定し、画面の`apiBaseUrl`は`apps/web/public/config.json`の`/api`を使います。アプリ用の追加環境変数は初期状態では不要です。
@@ -94,6 +94,8 @@ Lambdaの`SAMPLE_TABLE_NAME`はCDKが設定し、画面の`apiBaseUrl`は`apps/w
 | 状態 | 確認すること |
 | --- | --- |
 | `deploy` がスキップ | 手動実行で`deploy`がオフ、`main`以外のブランチを選択、または`AWS_DEPLOY_ROLE_ARN`が未設定 |
+| `ERR_PNPM_INVALID_DEPLOY_TARGET` | ルート`package.json`の`cdk:deploy`が`pnpm --filter @starter/infra run deploy`になっているか確認する |
+| `STACK_NAMEがGitHub OIDC初期設定用スタックを指しています` | Repository variableの`STACK_NAME`を削除するか、初期設定用スタックと異なるアプリ用の名前に変更する |
 | `AssumeRoleWithWebIdentity` 失敗 | GitHub所有者・リポジトリの名前とID、信頼ポリシーの`sub`、`main`ブランチ |
 | CloudFrontが403 | S3同期が完了したか、CloudFrontのキャッシュ更新が終わったか |
 | APIが500 | LambdaログとDynamoDBテーブルの状態 |

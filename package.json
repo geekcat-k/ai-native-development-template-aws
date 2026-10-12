@@ -11,7 +11,7 @@
     "test": "pnpm -r test",
     "verify": "pnpm typecheck && pnpm test && pnpm build && pnpm cdk:synth",
     "cdk:synth": "pnpm --filter @starter/infra synth",
-    "cdk:deploy": "pnpm --filter @starter/infra deploy"
+    "cdk:deploy": "pnpm --filter @starter/infra run deploy"
   },
   "devDependencies": {
     "esbuild": "^0.25.12"
