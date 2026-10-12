@@ -37,7 +37,11 @@ jobs:
       - uses: anthropics/claude-code-action@1d6de8cb0c237e7c15e9e1bdf973826ebae490cc # v1
         # GH_TOKENを上書きしない。標準のGITHUB_TOKENで作ったPRはCIを起動しないため、
         # アクションが使うClaude GitHub Appのトークンに任せる。
+        # 認証はどちらか一方のSecretだけを登録する。両方あるとAPIキー（従量課金）が優先される。
+        # CLAUDE_CODE_OAUTH_TOKEN: Pro/Maxプランの利用枠で動かす（`claude setup-token`で発行）。
+        # ANTHROPIC_API_KEY: Claude ConsoleのAPI従量課金で動かす。
         with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
           # PR作成とローカル検証に必要なコマンドを許可する。
           claude_args: >-

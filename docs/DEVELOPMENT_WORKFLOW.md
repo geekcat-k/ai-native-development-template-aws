@@ -12,7 +12,7 @@
 
 どちらか一方を使います。
 
-- **Claude**: Issueコメントに `@claude このIssueのタスクを実装し、検証結果をPull Requestに記載してください` と投稿します。`.github/workflows/claude.yml` がClaude Code Actionを起動します。初回はClaude GitHub Appと`ANTHROPIC_API_KEY`の設定が必要です。Claude Code on the webから同じIssueを参照してクラウドセッションを始めることもできます。
+- **Claude**: Issueコメントに `@claude このIssueのタスクを実装し、検証結果をPull Requestに記載してください` と投稿します。`.github/workflows/claude.yml` がClaude Code Actionを起動します。初回はClaude GitHub Appと、`CLAUDE_CODE_OAUTH_TOKEN`（Pro/Maxプランの利用枠）または`ANTHROPIC_API_KEY`（API従量課金）のどちらか一方の設定が必要です。Claude Code on the webから同じIssueを参照してクラウドセッションを始めることもできます。
 - **Codex**: CodexのGitHub連携とクラウド環境を設定し、Issueコメントで `@codex このIssueを実装し、テストしてPull Requestを作成してください` と依頼します。CodexのIssueコメント連携にはリポジトリへのアクセス設定が必要です。反応しない場合はCodex Cloud画面で同じIssueを参照してタスクを開始します。
 
 AIの作業結果とテスト結果を確認します。AIが作ったPull Requestは人がレビューします。
@@ -29,7 +29,7 @@ Actionsログの末尾にCloudFront URLが出ます。公開画面と `/api/hell
 
 ## 安全に進めるための境界
 
-Pull RequestではAWS認証情報を渡さず、本番デプロイは利用者による`main`の手動実行だけで行います。ClaudeへのIssueコメントはリポジトリ管理者・メンバー・共同作業者に限定しています。GitHubに秘密情報を書かず、AWSデプロイロールとClaude APIキーは指定された設定欄だけに置きます。データ削除、認証設定、本番データの変更は個別Issueで判断します。
+Pull RequestではAWS認証情報を渡さず、本番デプロイは利用者による`main`の手動実行だけで行います。ClaudeへのIssueコメントはリポジトリ管理者・メンバー・共同作業者に限定しています。GitHubに秘密情報を書かず、AWSデプロイロールとClaudeの認証トークンまたはAPIキーは指定された設定欄だけに置きます。データ削除、認証設定、本番データの変更は個別Issueで判断します。
 
 ## 公式資料
 
