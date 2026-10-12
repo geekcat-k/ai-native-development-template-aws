@@ -81,10 +81,14 @@ Lambdaの`SAMPLE_TABLE_NAME`はCDKが設定し、画面の`apiBaseUrl`は`apps/w
 
 ## 5. Claude Codeを使う場合のみ接続する
 
-1. [Claude](https://claude.ai/) のアカウントを用意します。`@claude` のGitHub Actionsを使う場合、[Claude Console](https://platform.claude.com/) でAPI利用と請求を設定し、APIキーを作ります。ClaudeのWeb利用契約だけではAPIキーが自動発行されません。
+1. [Claude](https://claude.ai/) のアカウントを用意します。`@claude` のGitHub Actionsの認証方法を、次のどちらか一方から選びます。
+   - **Pro/Maxプランの利用枠で動かす（推奨）**: 追加のAPI契約は不要です。手元のPCにClaude Codeをインストールし、ターミナルで `claude setup-token` を実行します。ブラウザでログインすると `sk-ant-oat01-` で始まるトークンが表示されます。トークンの有効期限は約1年です。Actionsでの利用は、ブラウザやCLIでの利用と同じプランの利用上限を共有します。
+   - **API従量課金で動かす**: [Claude Console](https://platform.claude.com/) でAPI利用と請求を設定し、APIキーを作ります。ClaudeのWeb利用契約だけではAPIキーが自動発行されません。
 2. [Claude GitHub App](https://github.com/apps/claude) を自分のリポジトリにインストールします。必要なGitHub権限を画面で確認してください。
-3. GitHubの **Settings > Secrets and variables > Actions > Secrets > New repository secret** に `ANTHROPIC_API_KEY` を登録します。値をIssue、Pull Request、ファイルへ貼らないでください。
+3. GitHubの **Settings > Secrets and variables > Actions > Secrets > New repository secret** に、手順1で選んだ方法に合わせて `CLAUDE_CODE_OAUTH_TOKEN`（Pro/Maxのトークン）または `ANTHROPIC_API_KEY`（APIキー）のどちらか一方を登録します。両方を登録するとAPIキーが優先され、従量課金になります。値をIssue、Pull Request、ファイルへ貼らないでください。
 4. 自分のIssueを一つ作り、コメントに `@claude このIssueの内容を確認してください` と書いて動作を確認します。Actionsの `Claude Code` が動きます。
+
+Pro/Maxのトークンが期限切れになったら、`claude setup-token` で再発行し、Secret `CLAUDE_CODE_OAUTH_TOKEN` の値を更新します。
 
 `@claude`のワークフローには、ブランチ作成とPull Request作成のため`contents`/`pull-requests`/`issues`の書き込み権限を付与しています。Node.jsとpnpmを用意し、Claudeが`pnpm verify`を実行できるようにしています。AWS認証情報は渡さず、本番デプロイは利用者が`main`から手動実行します。PRが作成できない場合は、**Settings > Actions > General > Workflow permissions** の **Allow GitHub Actions to create and approve pull requests** を有効にしてください。ただしGITHUB_TOKENで作られたPRはCIが起動しないため、PR作成後に`verify`が実行されることを必ず確認してください。手順1のRulesetを設定すると、`verify`が成功するまでマージできません。
 
@@ -115,7 +119,8 @@ Lambdaの`SAMPLE_TABLE_NAME`はCDKが設定し、画面の`apiBaseUrl`は`apps/w
 | `AssumeRoleWithWebIdentity` 失敗 | GitHub所有者・リポジトリの名前とID、信頼ポリシーの`sub`、`main`ブランチ |
 | CloudFrontが403 | S3同期が完了したか、CloudFrontのキャッシュ更新が終わったか |
 | APIが500 | LambdaログとDynamoDBテーブルの状態 |
-| `@claude` に反応しない | GitHub App、`ANTHROPIC_API_KEY`、Actions、コメント投稿者の権限 |
+| `@claude` に反応しない | GitHub App、`CLAUDE_CODE_OAUTH_TOKEN`または`ANTHROPIC_API_KEY`の登録と有効期限、Actions、コメント投稿者の権限 |
+| `@claude` が利用上限で止まる | Pro/Maxのトークンを使う場合、ブラウザやCLIと共有の利用上限に達していないか |
 | `@codex` に反応しない | CodexのGitHub連携、クラウド環境、対象リポジトリへの権限 |
 
 ## 公式資料
