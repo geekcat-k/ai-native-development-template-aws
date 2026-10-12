@@ -50,6 +50,10 @@ jobs:
       AWS_REGION: ${{ vars.AWS_REGION }}
       # 同一アカウントに複数プロジェクトを置く場合はRepository variablesのSTACK_NAMEで変える
       STACK_NAME: ${{ vars.STACK_NAME || 'AiWebStarterStack' }}
+      # 独自ドメインで公開する場合だけ3つすべて設定する（docs/TEMPLATE_SETUP.md 参照）
+      CUSTOM_DOMAIN_NAME: ${{ vars.CUSTOM_DOMAIN_NAME }}
+      HOSTED_ZONE_ID: ${{ vars.HOSTED_ZONE_ID }}
+      CERTIFICATE_ARN: ${{ vars.CERTIFICATE_ARN }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0

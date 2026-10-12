@@ -36,6 +36,7 @@ flowchart LR
 2. [環境構築手順](docs/TEMPLATE_SETUP.md)に従い、AWSとGitHubを設定し、AI開発ツールはClaude CodeまたはChatGPT Codexのどちらか一方を接続します。両方のアカウントは不要です。
 3. GitHub Actionsの `CI and deploy` で`main`を選び、`deploy`をオンにして手動実行します。表示されたCloudFront URLを開きます。
 4. [Issueから開発する手順](docs/DEVELOPMENT_WORKFLOW.md)に従い、最初の機能を作ります。
+5. 必要なら、[環境構築手順](docs/TEMPLATE_SETUP.md)の「8. 独自ドメインで公開する」に従い、Route 53で取得したドメインで公開します。
 
 アカウントと課金設定、GitHubの設定、AWSの初期設定はブラウザで行えます。ローカルCLIは必須ではありません。AWSとAIサービスの利用料金は各自のアカウントに発生します。
 
@@ -66,4 +67,4 @@ Node.js 24系とpnpm 10.14.0を使用します。ブラウザだけで進める�
 
 ## 初期構成の範囲
 
-サンプルAPIは認証なしの読み取り専用です。API GatewayはCloudFrontを経由せず直接呼ぶこともでき、スロットリング（10 req/s、バースト20）だけで保護しています。アプリ固有の認証、書き込みAPI、独自ドメイン、監視通知などは要件を決めてから追加します。DynamoDBテーブルとS3バケットはスタック削除時も保持します。
+サンプルAPIは認証なしの読み取り専用です。API GatewayはCloudFrontを経由せず直接呼ぶこともでき、スロットリング（10 req/s、バースト20）だけで保護しています。独自ドメインはRoute 53とACM証明書を用意し、Repository variablesを設定した場合だけ有効になります。アプリ固有の認証、書き込みAPI、監視通知などは要件を決めてから追加します。DynamoDBテーブルとS3バケットはスタック削除時も保持します。

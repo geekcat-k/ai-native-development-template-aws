@@ -24,7 +24,7 @@
 
 1. Pull Requestの差分とCIを確認し、承認後に`main`へマージする。
 2. `main`のCI成功を確認し、Actionsで`main`を選び、`deploy`をオンにして `CI and deploy` を手動実行する。
-3. Actionsの `Show site URL` に表示される公開URLと `/api/hello` を確認する。プロジェクト固有の確認項目は追加する。
+3. Actionsの `Show site URL` に表示される公開URLと `/api/hello` を確認する。独自ドメインを設定している場合は独自ドメインのURLが表示される（設定方法は`docs/TEMPLATE_SETUP.md`の「8. 独自ドメインで公開する」）。プロジェクト固有の確認項目は追加する。
 
 ## リリース前チェック
 
