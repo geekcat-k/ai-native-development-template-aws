@@ -1,7 +1,7 @@
 # Task: Dependabot の依存更新をまとめて適用する
 
 - Task ID: MAINT-2026-10-12-DEPENDABOT
-- Status: Approved
+- Status: Done
 - Owner: Codex
 - Related Requirements: CI と開発依存の保守
 - Created: 2026-10-12
@@ -23,8 +23,8 @@
 
 - [x] `pnpm install --frozen-lockfile` が成功する。
 - [x] `pnpm verify`（型チェック、テスト、ビルド、CDK synth）が成功する。
-- [ ] 集約 PR の `verify` が成功し、差分を確認する。
-- [ ] 集約 PR をマージし、置き換えた Dependabot PR を整理する。
+- [x] 集約 PR #15 の `verify` が成功し、差分を確認した（Actions run 38227495722）。
+- [x] 集約 PR #15 をマージし、置き換えた Dependabot PR を整理する。
 
 ## リスク・未決定事項
 
