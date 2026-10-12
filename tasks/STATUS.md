@@ -2,7 +2,7 @@
 
 このドキュメントは、プロジェクト全体のフェーズ進捗とタスク実行状況を管理するための一覧です。
 
-- Last Updated: YYYY-MM-DD
+- Last Updated: 2026-10-12
 - Source of Truth: 承認済みの`docs/`、承認済みの`tasks/`、この進捗一覧
 
 ## ステータス定義
@@ -35,13 +35,15 @@
 
 | Task ID | タスク | 関連フェーズ | Status | 成果物 | 備考 |
 | --- | --- | --- | --- | --- | --- |
-|  |  |  | Not Started |  |  |
+| MAINT-2026-10-12 | GitHub Actions の Node.js 20 警告解消 | 保守 | Waiting Approval | `tasks/2026-10-12-actions-node24.md` | PR #14 の verify 成功。マージ承認待ち。 |
 
 ## 直近の変更履歴
 
 | Date | 内容 | 対象 |
 | --- | --- | --- |
 | YYYY-MM-DD | 初期作成 | `tasks/STATUS.md` |
+| 2026-10-12 | Node.js 20 警告への対応を開始し、ローカル検証を完了 | `tasks/2026-10-12-actions-node24.md` |
+| 2026-10-12 | PR #14 の verify 成功と対象警告の解消を確認 | `tasks/2026-10-12-actions-node24.md` |
 
 ## 未承認・未決定事項
 
