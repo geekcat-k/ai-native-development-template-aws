@@ -25,7 +25,7 @@ jobs:
           printf 'GitHubOwnerId=%s\n' "$GITHUB_REPOSITORY_OWNER_ID"
           printf 'GitHubRepo=%s\n' "${GITHUB_REPOSITORY#*/}"
           printf 'GitHubRepoId=%s\n' "$GITHUB_REPOSITORY_ID"
-      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v4.4.0
         with:
           version: 10.14.0
@@ -51,7 +51,7 @@ jobs:
       # 同一アカウントに複数プロジェクトを置く場合はRepository variablesのSTACK_NAMEで変える
       STACK_NAME: ${{ vars.STACK_NAME || 'AiWebStarterStack' }}
     steps:
-      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v4.4.0
         with:
           version: 10.14.0
