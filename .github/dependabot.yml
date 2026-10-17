@@ -8,3 +8,8 @@ updates:
     directory: /
     schedule:
       interval: weekly
+    ignore:
+      # 型定義は実行環境（CIのNode.jsとLambdaのNODEJS_24_X）のメジャーバージョンに揃える。
+      # 実行環境を上げるときに、型定義のメジャー更新も同じPull Requestで行う。
+      - dependency-name: '@types/node'
+        update-types: ['version-update:semver-major']
