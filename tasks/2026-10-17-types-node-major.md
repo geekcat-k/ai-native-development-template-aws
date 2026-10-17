@@ -20,7 +20,7 @@ Dependabot の PR #20 が `@types/node` を 24 系から 26 系へ更新しよ�
 ## 完了条件と検証
 
 - [x] `main` の `@types/node` が 24 系、CI の Node.js と Lambda ランタイムが 24 系であることを確認した。
-- [ ] Pull Request の `verify` が成功した。
+- [x] Pull Request #21 の `verify` が成功した（Actions run 39018952748）。
 - [ ] マージ後、Dependabot が `@types/node` のメジャー更新 PR を作らないことを確認する。
 
 ## リスク・未決定事項

@@ -53,6 +53,7 @@
 | 2026-10-12 | @claude の Pro/Max トークン認証対応を開始 | `tasks/2026-10-12-claude-subscription-auth.md` |
 | 2026-10-12 | 独自ドメイン（Route 53）対応を実装し、ローカル検証を完了 | `tasks/2026-10-12-custom-domain.md` |
 | 2026-10-17 | `@types/node` のメジャー更新を Dependabot の対象外にする | `tasks/2026-10-17-types-node-major.md` |
+| 2026-10-17 | PR #21 の verify 成功を確認し、PR #20 をクローズ | `tasks/2026-10-17-types-node-major.md` |
 
 ## 未承認・未決定事項
 
