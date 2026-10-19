@@ -34,7 +34,7 @@ jobs:
           node-version: 24
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - uses: anthropics/claude-code-action@a26b07d8c778b0c43f64618e5fd29fd0f8af72e8 # v1
+      - uses: anthropics/claude-code-action@f27be6b65a4652f08a2ba3cff79114829b588967 # v1
         # GH_TOKENを上書きしない。標準のGITHUB_TOKENで作ったPRはCIを起動しないため、
         # アクションが使うClaude GitHub Appのトークンに任せる。
         # 認証はどちらか一方のSecretだけを登録する。両方あるとAPIキー（従量課金）が優先される。
