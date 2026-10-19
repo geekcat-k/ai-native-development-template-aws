@@ -9,7 +9,7 @@
     "test": "vitest run --exclude 'dist/**'"
   },
   "dependencies": {
-    "@aws-sdk/client-dynamodb": "^3.1151.0"
+    "@aws-sdk/client-dynamodb": "^3.1152.0"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.152",
