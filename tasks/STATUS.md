@@ -2,7 +2,7 @@
 
 このドキュメントは、プロジェクト全体のフェーズ進捗とタスク実行状況を管理するための一覧です。
 
-- Last Updated: 2026-10-17
+- Last Updated: 2026-10-22
 - Source of Truth: 承認済みの`docs/`、承認済みの`tasks/`、この進捗一覧
 
 ## ステータス定義
@@ -40,6 +40,7 @@
 | MAINT-2026-10-12-CLAUDE-AUTH | @claude を Pro/Max プランの利用枠で動かす | 保守 | Waiting Approval | `tasks/2026-10-12-claude-subscription-auth.md` | Secret 登録後の動作確認は利用者が行う。 |
 | FEAT-2026-10-12-CUSTOM-DOMAIN | Route 53 の独自ドメインで公開できるようにする | 保守 | Waiting Approval | `tasks/2026-10-12-custom-domain.md` | Issue #18。独自ドメインでの動作確認は利用者が行う。 |
 | MAINT-2026-10-17-TYPES-NODE | `@types/node` のメジャーを実行環境に揃える | 保守 | Waiting Approval | `tasks/2026-10-17-types-node-major.md` | PR #20 のレビュー指摘。PR #20 はクローズする。 |
+| MAINT-2026-10-22-CI-COST | GitHub Actionsの利用時間を減らす | 保守 | Waiting Approval | `tasks/2026-10-22-ci-cost-reduction.md` | Markdownだけの変更でverifyを省略し、PRの古いverifyを止める。neko-kawaii PR #52と同じ変更。 |
 
 ## 直近の変更履歴
 
@@ -54,6 +55,7 @@
 | 2026-10-12 | 独自ドメイン（Route 53）対応を実装し、ローカル検証を完了 | `tasks/2026-10-12-custom-domain.md` |
 | 2026-10-17 | `@types/node` のメジャー更新を Dependabot の対象外にする | `tasks/2026-10-17-types-node-major.md` |
 | 2026-10-17 | PR #21 の verify 成功を確認し、PR #20 をクローズ | `tasks/2026-10-17-types-node-major.md` |
+| 2026-10-22 | verifyのMarkdownだけの変更での省略と、PRの古いverifyの停止を追加 | `tasks/2026-10-22-ci-cost-reduction.md` |
 
 ## 未承認・未決定事項
 
