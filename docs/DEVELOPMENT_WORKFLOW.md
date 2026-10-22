@@ -21,6 +21,11 @@ AIの作業結果とテスト結果を確認します。AIが作ったPull Reque
 
 Pull Requestで `CI and deploy / verify` が型チェック、テスト、ビルド、CDK synthを実行します。失敗したら該当Pull Requestで`@claude`または`@codex`に修正を依頼します。Codexのレビューを利用する場合はPull Requestコメントの `@codex review` を使います。
 
+Actionsの利用時間を減らすため、`verify`は次のように動きます。
+
+- 変更が`docs/`直下・`docs/decisions/`・`tasks/`・リポジトリ直下のMarkdownだけなら、`pnpm verify`を省略して成功にします。本番デプロイの手動実行では常にすべて検証します。テストやビルドがこれらのMarkdownを読むようにした場合は、`.github/workflows/ci-deploy.yml`の判定から外してください。
+- 同じPull Requestへ続けてpushした場合は、古い`verify`を止めて最新のコミットだけを検証します。
+
 ## 4. マージとAWSデプロイ
 
 承認後にPull Requestを`main`へマージすると、GitHub ActionsはCIを実行します。利用者がCI成功とリリース内容を確認し、**Actions > CI and deploy > Run workflow** で`main`を選び、`deploy`をオンにして実行します。初回は先にGitHub Repository variablesを設定してください。手動実行の`verify`が成功すると、`deploy`がOIDCでAWSへ接続し、CDKをデプロイし、静的ファイルをS3へ配信して、CloudFrontのキャッシュを更新します。
