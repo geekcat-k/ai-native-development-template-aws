@@ -43,6 +43,11 @@ jobs:
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          # Bashの既定のタイムアウト（2分）を超えると、Claudeが pnpm verify をバックグラウンド実行に切り替え、
+          # 完了を待たずに終了してPRを作らないことがある。テストが増えても完了まで待てるよう延ばす。
+          settings: |
+            {"env": {"BASH_DEFAULT_TIMEOUT_MS": "900000", "BASH_MAX_TIMEOUT_MS": "1200000"}}
           # PR作成とローカル検証に必要なコマンドを許可する。
           claude_args: >-
             --allowedTools "Bash(git checkout:*),Bash(git add:*),Bash(git commit:*),Bash(git push:*),Bash(gh pr create:*),Bash(pnpm verify)"
+            --append-system-prompt "pnpm verify はバックグラウンドで実行せず、完了するまで待ってください。"
