@@ -10,12 +10,19 @@ const customDomain = {
   certificateArn: 'arn:aws:acm:us-east-1:123456789012:certificate/11111111-2222-3333-4444-555555555555',
 };
 
+// スタックの合成はLambdaのバンドルを含むため1回数秒かかる。テストごとに合成すると、テストが増えたときに
+// CIのverifyが長くなる。独自ドメインなしの標準の設定は1回だけ合成して共有する。
+// テストはテンプレートを読むだけで変更しないこと。別の設定が必要なテストは個別に合成する。
+let defaultTemplate: Template | undefined;
+
+function synthesizeDefaultStack(): Template {
+  defaultTemplate ??= Template.fromStack(new StarterStack(new cdk.App(), 'TestStack', { env: testEnv }));
+  return defaultTemplate;
+}
+
 describe('StarterStack', () => {
   it('非公開S3、DynamoDB、Lambda、HTTP APIを作る', () => {
-    const app = new cdk.App();
-    const template = Template.fromStack(new StarterStack(app, 'TestStack', {
-      env: { account: '123456789012', region: 'ap-northeast-1' },
-    }));
+    const template = synthesizeDefaultStack();
 
     template.hasResourceProperties('AWS::S3::Bucket', {
       PublicAccessBlockConfiguration: {
@@ -31,10 +38,7 @@ describe('StarterStack', () => {
   });
 
   it('APIをCloudFrontの/api配下に公開し、スロットリングとログ保持期間を設定する', () => {
-    const app = new cdk.App();
-    const template = Template.fromStack(new StarterStack(app, 'TestStack2', {
-      env: { account: '123456789012', region: 'ap-northeast-1' },
-    }));
+    const template = synthesizeDefaultStack();
 
     template.hasResourceProperties('AWS::CloudFront::Distribution', {
       DistributionConfig: {
@@ -48,10 +52,7 @@ describe('StarterStack', () => {
   });
 
   it('LambdaにはDynamoDBのGetItemだけを許可する', () => {
-    const app = new cdk.App();
-    const template = Template.fromStack(new StarterStack(app, 'TestStack3', {
-      env: { account: '123456789012', region: 'ap-northeast-1' },
-    }));
+    const template = synthesizeDefaultStack();
 
     template.hasResourceProperties('AWS::IAM::Policy', {
       PolicyDocument: {
@@ -61,8 +62,7 @@ describe('StarterStack', () => {
   });
 
   it('独自ドメインを指定しない場合はCloudFrontの既定ドメインだけで公開する', () => {
-    const app = new cdk.App();
-    const template = Template.fromStack(new StarterStack(app, 'TestStack4', { env: testEnv }));
+    const template = synthesizeDefaultStack();
 
     template.resourceCountIs('AWS::Route53::RecordSet', 0);
     template.hasResourceProperties('AWS::CloudFront::Distribution', {
